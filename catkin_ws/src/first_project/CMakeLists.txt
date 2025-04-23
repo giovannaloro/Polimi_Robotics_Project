@@ -10,6 +10,10 @@ project(first_project)
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   rospy
+  sensor_msgs
+  nav_msgs
+  tf
+  std_msgs
 )
 
 ## System dependencies are found with CMake's conventions
@@ -115,7 +119,7 @@ catkin_package(
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
 include_directories(
-# include
+  include
   ${catkin_INCLUDE_DIRS}
 )
 
@@ -134,6 +138,8 @@ include_directories(
 ## The recommended prefix ensures that target names across packages don't collide
 # add_executable(${PROJECT_NAME}_node src/first_project_node.cpp)
 
+ add_executable(gps_odometer src/gps_odometer.cpp)
+
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
 ## target back to the shorter version for ease of user use
@@ -149,13 +155,14 @@ include_directories(
 #   ${catkin_LIBRARIES}
 # )
 
+
+target_link_libraries(gps_odometer ${catkin_LIBRARIES})
 #############
 ## Install ##
 #############
 
 # all install targets should use catkin DESTINATION variables
 # See http://ros.org/doc/api/catkin/html/adv_user_guide/variables.html
-
 ## Mark executable scripts (Python etc.) for installation
 ## in contrast to setup.py, you can choose the destination
 # catkin_install_python(PROGRAMS

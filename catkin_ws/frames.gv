@@ -1,0 +1,7 @@
+digraph G {
+"odom" -> "gps"[label="Broadcaster: /gps_odometer\nAverage rate: 10.217 Hz\nMost recent transform: 1745318855.007 ( 0.083 sec old)\nBuffer length: 4.894 sec\n"];
+edge [style=invis];
+ subgraph cluster_legend { style=bold; color=black; label ="view_frames Result";
+"Recorded at time: 1745318855.089"[ shape=plaintext ] ;
+ }->"odom";
+}

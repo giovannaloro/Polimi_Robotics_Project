@@ -1,0 +1,6 @@
+ <launch>
+	<node pkg="first_project" type="gps_odometer" name="gps_odometer" output="screen"/>
+		<param name="lat_r" value="45.618932"/>
+		<param name="lon_r" value="9.281179"/>
+		<param name="alt_r" value="229.048961"/>  
+</launch>
