@@ -10,6 +10,8 @@ project(first_project)
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   rospy
+  nav_msgs
+  tf
 )
 
 ## System dependencies are found with CMake's conventions
@@ -104,7 +106,7 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES first_project
-#  CATKIN_DEPENDS roscpp rospy
+#  CATKIN_DEPENDS roscpp rospy tf nav_msgs
 #  DEPENDS system_lib
 )
 
@@ -203,3 +205,6 @@ include_directories(
 
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
+
+add_executable(odometer src/odometer.cpp)
+target_link_libraries(odometer ${catkin_LIBRARIES})
