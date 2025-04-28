@@ -34,9 +34,9 @@ float lon_PC = 9.282614;
 
 //define sectors
 enum sector{
-  SECTOR_1 = 0,
-  SECTOR_2 = 1,
-  SECTOR_3 = 2
+  SECTOR_1 = 1,
+  SECTOR_2 = 2,
+  SECTOR_3 = 3
 };
 
 //define return callback persistent values
@@ -53,21 +53,35 @@ void sectorCallback(const geometry_msgs::PointStamped::ConstPtr& msg1, const  se
   first_project::secotor_times sector_msg;
 
   //current_sector identification;
-  float current_lat = msg2.latitude;
+  float current_lat = msg2->latitude;
   float current_lon = msg2->longitude;
-  if (current_lon >= lon_Sec1_2) {current_sector = SECTOR_2;}
-  else if (current_lat <= lat_Sec1_3 ) {current_sector = SECTOR_3;}
-  else if (current_lat >= lat_Sec1_3 && current_lon <= lon_PC) {current_sector = SECTOR_1;}
-  else if (current_lat <= lat_Sec2_3 && current_lon >= lon_PC ) {current_sector = SECTOR_3;}
-  else if (current_lat <= lat_Sec1_2 && current_lat >= lat_Sec2_3 && current_lon >= lon_Sec2_3) {current_sector = SECTOR_2;}
-  else {current_sector = SECTOR_1;}
+  bool inSector1 = (current_lat >= lat_Sec1_3 && current_lon <= lon_PC );
+  bool inSector2 = (current_lat <= lat_Sec1_2 && current_lat >= lat_Sec2_3 && current_lon >= lon_Sec2_3 || current_lon >= lon_Sec1_2);
+  bool inSector3 = (current_lat <= lat_Sec2_3 && current_lon >= lon_PC || current_lat <= lat_Sec1_3);
+
+
+  if (inSector1) {
+    current_sector = SECTOR_1;
+    ROS_INFO("S1");
+
+  } 
+  if (inSector2) {
+    ROS_INFO("S2");
+  } 
+  if (inSector3) {
+    ROS_INFO("S3");
+  } 
+  if (!(inSector1||inSector2||inSector3)) {
+    // maybe log warning or fallback
+    ROS_INFO("S1");
+  }
 
   //check sector changes and update persistent values 
   if (current_sector == previous_sector){
     //update time, average and count 
     current_sector_time += dt;
     current_sector_mean_speed = ((current_sector_mean_speed*count)+(msg1->point.y*0.28)) / (count+1);
-    ++count;
+    count++;
   }
   else{
     //reset persistent variables
@@ -78,7 +92,7 @@ void sectorCallback(const geometry_msgs::PointStamped::ConstPtr& msg1, const  se
   }
 
   //debug
-  ROS_INFO("Time: %.2f | Current Sector: %d | Previous Sector: %d | Mean Speed: %.2f", current_sector_time, current_sector, previous_sector, current_sector_mean_speed);
+  //ROS_INFO("Time: %.2f | Current Sector: %d | Previous Sector: %d | Mean Speed: %.2f", current_sector_time, current_sector, previous_sector, current_sector_mean_speed);
 
   //send message
   sector_msg.current_sector = current_sector;

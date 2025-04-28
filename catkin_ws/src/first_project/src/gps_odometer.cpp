@@ -29,7 +29,7 @@ public:
 	n.param("alt_r", alt_r_, 0.0);
 
 	 ROS_INFO("Reference GPS set: lat_r = %.6f, lon_r = %.6f, alt_r = %.2f", lat_r_, lon_r_, alt_r_);
-
+	gpsToECEF(lat_r_, lon_r_, alt_r_, x_ref_, y_ref_, z_ref_);
 
 	sub = n.subscribe("/swiftnav/front/gps_pose", 1, &GPSOdometer::gpsCallback, this);
         pub = n.advertise<nav_msgs::Odometry>("/gps_odom", 1);
@@ -62,6 +62,7 @@ void gpsCallback(const sensor_msgs::NavSatFix::ConstPtr& msg){
 
 
 void gpsToECEF(double lat, double lon, double alt, double& x, double& y, double& z){
+
 	double e2 = 1-(pow(b,2)/pow(a,2));
 	double N = a/sqrt(1-e2*sin(lat)*sin(lat));
 
@@ -90,7 +91,6 @@ void gpsToOdom(double lat, double lon, double alt, double& e, double& n, double&
 }
 };
 int main(int argc, char **argv){
-  	
 	ros::init(argc, argv, "gps_odometer");
 	ros::NodeHandle n;
 	GPSOdometer gps_odometer;
