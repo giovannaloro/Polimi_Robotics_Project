@@ -9,19 +9,82 @@
 #include <message_filters/sync_policies/exact_time.h>
 #include <message_filters/sync_policies/approximate_time.h>
 
-float mean_speed;
-float sector_time;
-
 //define publisher
 ros::Publisher sector_pub;
 
-//define main track point 
-float lat_13
+//define time granularity 
+float dt = 0.05;
 
+
+// Section 1/3
+float lat_Sec1_3 = 45.613760;
+float lon_Sec1_3 = 9.280715;
+
+// Section 1/2
+float lat_Sec1_2 = 45.630132;
+float lon_Sec1_2 = 9.290356;
+
+// Section 2/3
+float lat_Sec2_3 = 45.623147;
+float lon_Sec2_3 = 9.286618;
+
+// PC
+float lat_PC = 45.611905;
+float lon_PC = 9.282614;
+
+//define sectors
+enum sector{
+  SECTOR_1 = 0,
+  SECTOR_2 = 1,
+  SECTOR_3 = 2
+};
+
+//define return callback persistent values
+float current_sector_time = 0;
+float current_sector_mean_speed = 0; 
+int count = 0;
+int current_sector = SECTOR_1;
+int previous_sector = SECTOR_1;
 
 
 void sectorCallback(const geometry_msgs::PointStamped::ConstPtr& msg1, const  sensor_msgs::NavSatFix::ConstPtr& msg2){
- ROS_INFO("Message arrived");
+
+  //define output message 
+  first_project::secotor_times sector_msg;
+
+  //current_sector identification;
+  float current_lat = msg2.latitude;
+  float current_lon = msg2->longitude;
+  if (current_lon >= lon_Sec1_2) {current_sector = SECTOR_1;}
+  else if (current_lat <= lat_Sec1_3 ) {current_sector = SECTOR_3;}
+  else if (current_lat >= lat_Sec1_3 && current_lon <= lon_PC) {current_sector = SECTOR_1;}
+  else if (current_lat <= lat_Sec2_3 && current_lon >= lon_PC ) {current_sector = SECTOR_3;}
+  else if (current_lat <= lat_Sec1_2 && current_lat >= lat_Sec2_3 && current_lon >= lon_Sec2_3) {current_sector = SECTOR_2;}
+  else {current_sector = SECTOR_1;}
+
+  //check sector changes and update persistent values 
+  if (current_sector == previous_sector){
+    //update time, average and count 
+    current_sector_time += dt;
+    current_sector_mean_speed = ((current_sector_mean_speed*count)+(msg1->point.y*0.28)) / (count+1);
+    ++count;
+  }
+  else{
+    //reset persistent variables
+    previous_sector = current_sector;
+    count = 1;
+    current_sector_mean_speed = msg1->point.y*0.28;
+    current_sector_time = dt;
+  }
+
+  //debug
+  ROS_INFO("Time: %.2f | Current Sector: %d | Previous Sector: %d | Mean Speed: %.2f", current_sector_time, current_sector, previous_sector, current_sector_mean_speed);
+
+  //send message
+  sector_msg.current_sector = current_sector;
+  sector_msg.current_sector_mean_speed = current_sector_mean_speed;
+  sector_msg.current_sector_time = current_sector_time;
+  sector_pub.publish(sector_msg);
 }
 
 int main(int argc, char **argv){
