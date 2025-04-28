@@ -12,9 +12,8 @@
 //define publisher
 ros::Publisher sector_pub;
 
-//define time granularity 
+//define delta time  
 float dt = 0.1;
-
 
 // Section 1/3
 float lat_Sec1_3 = 45.613760;
@@ -42,10 +41,9 @@ enum sector{
 //define return callback persistent values
 float current_sector_time = 0;
 float current_sector_mean_speed = 0; 
-int count = 0;
 int current_sector = SECTOR_1;
 int previous_sector = SECTOR_1;
-
+int count = 0;
 
 void sectorCallback(const geometry_msgs::PointStamped::ConstPtr& msg1, const  sensor_msgs::NavSatFix::ConstPtr& msg2){
 

@@ -11,14 +11,11 @@
 const double WHEELBASE = 1.765;
 //define steering factor
 const double STEERING_FACTOR = 0.031;
+
 // Global state
 double x = 0.0, y = 0.0, theta = 1.57;
 double lat = 0.0, lon = 0.0;
 double dt = 0.05;
-//origin position
-double origin_lat = 45.61893237575814;
-double origin_lon = 9.281178868541616; 
-double origin_alt = 229.0450744760857;      
 
 //define publisher
 ros::Publisher odometer_pub;

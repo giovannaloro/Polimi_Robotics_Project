@@ -6,9 +6,10 @@
 #include "tf/transform_broadcaster.h"
 #include "geometry_msgs/TransformStamped.h"
 
-
+//gps to ecef translation constants
 const double a = 6378137;
 const double b = 6356752;
+//global state
 double previous_e = 0;
 double previous_n = 0;
 

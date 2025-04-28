@@ -1,0 +1,13 @@
+<launch>
+    <node pkg="first_project" type="odometer" name="odometer" output="screen" />
+    <node pkg="first_project" type="gps_odometer" name="gps_odometer" output="screen" />
+    <node pkg="first_project" type="sector_times" name="sector_times" output="screen" />
+    
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find first_project)/config/rviz_conf.rviz" />
+    
+
+    <param name="lat_r" value="45.618932"/>
+	<param name="lon_r" value="9.281179"/>
+	<param name="alt_r" value="229.048961"/>  
+
+</launch>
