@@ -55,7 +55,7 @@ void sectorCallback(const geometry_msgs::PointStamped::ConstPtr& msg1, const  se
   //current_sector identification;
   float current_lat = msg2.latitude;
   float current_lon = msg2->longitude;
-  if (current_lon >= lon_Sec1_2) {current_sector = SECTOR_1;}
+  if (current_lon >= lon_Sec1_2) {current_sector = SECTOR_2;}
   else if (current_lat <= lat_Sec1_3 ) {current_sector = SECTOR_3;}
   else if (current_lat >= lat_Sec1_3 && current_lon <= lon_PC) {current_sector = SECTOR_1;}
   else if (current_lat <= lat_Sec2_3 && current_lon >= lon_PC ) {current_sector = SECTOR_3;}
