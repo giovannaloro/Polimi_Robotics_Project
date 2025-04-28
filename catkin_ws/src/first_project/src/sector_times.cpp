@@ -13,7 +13,7 @@
 ros::Publisher sector_pub;
 
 //define time granularity 
-float dt = 0.05;
+float dt = 0.1;
 
 
 // Section 1/3
@@ -55,24 +55,29 @@ void sectorCallback(const geometry_msgs::PointStamped::ConstPtr& msg1, const  se
   //current_sector identification;
   float current_lat = msg2->latitude;
   float current_lon = msg2->longitude;
+  bool no_signal = (current_lat == 0 && current_lon == 0);
   bool inSector1 = (current_lat >= lat_Sec1_3 && current_lon <= lon_PC );
   bool inSector2 = (current_lat <= lat_Sec1_2 && current_lat >= lat_Sec2_3 && current_lon >= lon_Sec2_3 || current_lon >= lon_Sec1_2);
   bool inSector3 = (current_lat <= lat_Sec2_3 && current_lon >= lon_PC || current_lat <= lat_Sec1_3);
 
 
-  if (inSector1) {
+  if (no_signal) {
+    current_sector = previous_sector;
+  }
+  else if (inSector1) {
     current_sector = SECTOR_1;
     ROS_INFO("S1");
-
   } 
-  if (inSector2) {
+  else if (inSector2) {
+    current_sector = SECTOR_2;
     ROS_INFO("S2");
   } 
-  if (inSector3) {
+  else if (inSector3) {
+    current_sector = SECTOR_3;
     ROS_INFO("S3");
   } 
-  if (!(inSector1||inSector2||inSector3)) {
-    // maybe log warning or fallback
+  else if (!(inSector1||inSector2||inSector3)) {
+    current_sector = SECTOR_1;
     ROS_INFO("S1");
   }
 
@@ -92,7 +97,7 @@ void sectorCallback(const geometry_msgs::PointStamped::ConstPtr& msg1, const  se
   }
 
   //debug
-  //ROS_INFO("Time: %.2f | Current Sector: %d | Previous Sector: %d | Mean Speed: %.2f", current_sector_time, current_sector, previous_sector, current_sector_mean_speed);
+  ROS_INFO("Time: %.2f | Current Sector: %d | Previous Sector: %d | Mean Speed: %.2f", current_sector_time, current_sector, previous_sector, current_sector_mean_speed);
 
   //send message
   sector_msg.current_sector = current_sector;

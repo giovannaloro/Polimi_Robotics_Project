@@ -139,6 +139,7 @@ include_directories(
 
  add_executable(gps_odometer src/gps_odometer.cpp)
  add_executable(sector_times src/sector_times.cpp)  
+ add_executable(odometer src/odometer.cpp)
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
 ## target back to the shorter version for ease of user use
@@ -157,6 +158,7 @@ include_directories(
 
 target_link_libraries(gps_odometer ${catkin_LIBRARIES})
 target_link_libraries(sector_times ${catkin_LIBRARIES})
+target_link_libraries(odometer ${catkin_LIBRARIES})
 #############
 ## Install ##
 #############
